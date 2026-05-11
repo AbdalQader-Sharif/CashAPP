@@ -1,0 +1,47 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=server\" \"npm run dev --workspace=client\" \"wait-on tcp:5173 tcp:4000 && cross-env ELECTRON_START_URL=http://localhost:5173 electron .\"",
+    "build": "npm run build --workspace=server && npm run build --workspace=client && electron-builder",
+    "build:installer": "npm run build --workspace=server && npm run build --workspace=client && electron-builder --win nsis",
+    "build:portable": "npm run build --workspace=server && npm run build --workspace=client && electron-builder --win portable"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^40.9.3",
+    "electron-builder": "^26.8.1",
+    "wait-on": "^9.0.6"
+  },
+  "build": {
+    "appId": "com.brewpoint.pos",
+    "productName": "BrewPoint POS",
+    "directories": {
+      "output": "dist",
+      "buildResources": "assets"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "../../apps/client/dist/**/*",
+      "../../apps/server/dist/**/*",
+      "../../apps/server/prisma/**/*",
+      "../../package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CASHIER
+}
+
+enum OrderStatus {
+  COMPLETED
+  HELD
+  CANCELED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  SPLIT
+}
+
+model Users {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  passwordHash String
+  role         Role
+  active       Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  orders       Orders[]
+  auditLogs    AuditLogs[]
+}
+
+model Categories {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  products  Products[]
+}
+
+model Products {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  price       Float
+  stock       Int         @default(0)
+  unavailable Boolean     @default(false)
+  categoryId  String
+  category    Categories  @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  inventory   Inventory?
+  orderItems  OrderItems[]
+}
+
+model Orders {
+  id          String       @id @default(cuid())
+  reference   String       @unique
+  userId      String
+  user        Users        @relation(fields: [userId], references: [id])
+  status      OrderStatus  @default(COMPLETED)
+  notes       String?
+  subtotal    Float
+  discount    Float        @default(0)
+  tax         Float
+  total       Float
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  items       OrderItems[]
+  payments    Payments[]
+}
+
+model OrderItems {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Orders   @relation(fields: [orderId], references: [id])
+  productId  String
+  product    Products @relation(fields: [productId], references: [id])
+  name       String
+  quantity   Int
+  unitPrice  Float
+  lineTotal  Float
+  note       String?
+}
+
+model Payments {
+  id        String        @id @default(cuid())
+  orderId   String
+  order     Orders        @relation(fields: [orderId], references: [id])
+  method    PaymentMethod
+  amount    Float
+  createdAt DateTime      @default(now())
+}
+
+model Inventory {
+  id         String   @id @default(cuid())
+  productId  String   @unique
+  product    Products @relation(fields: [productId], references: [id])
+  quantity   Int
+  updatedAt  DateTime @updatedAt
+}
+
+model Settings {
+  id               String   @id @default(cuid())
+  shopName         String
+  taxPercentage    Float
+  currency         String
+  receiptFooter    String
+  language         String   @default("en")
+  updatedAt        DateTime @updatedAt
+}
+
+model AuditLogs {
+  id        String   @id @default(cuid())
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  details   String?
+  createdAt DateTime @default(now())
+}
