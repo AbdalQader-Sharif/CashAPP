@@ -14,6 +14,7 @@
 4. Start web apps:
    ```bash
    npm run dev
+
    ```
 
 ## Desktop Development (Electron)
@@ -24,7 +25,7 @@ npm run dev:desktop
 ## Build Desktop
 - Installer (`installer.exe`):
   ```bash
-  npm run build:installer --workspace=desktop
+
   ```
 - Portable EXE:
   ```bash
