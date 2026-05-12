@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron')
+const fs = require('node:fs')
 const { spawn } = require('node:child_process')
 const path = require('node:path')
 
@@ -34,9 +35,17 @@ function createWindow() {
     return
   }
 
-  const indexPath = app.isPackaged
-    ? path.join(__dirname, 'apps', 'client', 'dist', 'index.html')
-    : path.join(__dirname, '..', 'client', 'dist', 'index.html')
+  if (!app.isPackaged) {
+    mainWindow.loadFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
+    return
+  }
+
+  const appPath = app.getAppPath()
+  const packagedCandidates = [
+    path.join(appPath, 'apps', 'client', 'dist', 'index.html'),
+    path.join(appPath, 'client', 'dist', 'index.html')
+  ]
+  const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate)) || packagedCandidates[0]
   mainWindow.loadFile(indexPath)
 }
 
