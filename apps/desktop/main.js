@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, dialog } = require('electron')
 const fs = require('node:fs')
 const { spawn } = require('node:child_process')
 const path = require('node:path')
@@ -47,9 +47,13 @@ function createWindow() {
   ]
   const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate))
   if (!indexPath) {
-    console.warn('Packaged client index.html not found. Attempted paths:', packagedCandidates)
+    const message = `Packaged client index.html not found. Attempted paths:\n- ${packagedCandidates.join('\n- ')}\n\nVerify the desktop build output and packaging configuration includes the client dist bundle.`
+    console.error(message)
+    dialog.showErrorBox('BrewPoint POS - Missing UI Bundle', message)
+    app.quit()
+    return
   }
-  mainWindow.loadFile(indexPath || packagedCandidates[0])
+  mainWindow.loadFile(indexPath)
 }
 
 app.whenReady().then(() => {
