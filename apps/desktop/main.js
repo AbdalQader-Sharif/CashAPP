@@ -47,7 +47,7 @@ function createWindow() {
   ]
   const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate))
   if (!indexPath) {
-    console.warn('Packaged client index.html not found, falling back to:', packagedCandidates[0])
+    console.warn('Packaged client index.html not found. Attempted paths:', packagedCandidates)
   }
   mainWindow.loadFile(indexPath || packagedCandidates[0])
 }
