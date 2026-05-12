@@ -28,8 +28,16 @@ function createWindow() {
     title: 'BrewPoint POS'
   })
 
-  const startUrl = process.env.ELECTRON_START_URL || `file://${path.join(__dirname, '..', 'client', 'dist', 'index.html')}`
-  mainWindow.loadURL(startUrl)
+  const devUrl = process.env.ELECTRON_START_URL
+  if (devUrl) {
+    mainWindow.loadURL(devUrl)
+    return
+  }
+
+  const indexPath = app.isPackaged
+    ? path.join(__dirname, 'apps', 'client', 'dist', 'index.html')
+    : path.join(__dirname, '..', 'client', 'dist', 'index.html')
+  mainWindow.loadFile(indexPath)
 }
 
 app.whenReady().then(() => {
