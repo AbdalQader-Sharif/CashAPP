@@ -8,7 +8,7 @@ let serverProcess
 
 function startServer() {
   const serverFile = app.isPackaged
-    ? path.join(process.resourcesPath, 'app.asar.unpacked', '..', '..', 'apps', 'server', 'dist', 'server.js')
+    ? path.join(process.resourcesPath, 'apps', 'server', 'dist', 'server.js')
     : path.join(__dirname, '..', 'server', 'src', 'server.ts')
 
   const command = app.isPackaged ? 'node' : 'npx'
@@ -40,14 +40,9 @@ function createWindow() {
     return
   }
 
-  const appPath = app.getAppPath()
-  const packagedCandidates = [
-    path.join(appPath, 'apps', 'client', 'dist', 'index.html'),
-    path.join(appPath, 'client', 'dist', 'index.html')
-  ]
-  const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate))
-  if (!indexPath) {
-    const message = `Packaged client index.html not found. Attempted paths:\n- ${packagedCandidates.join('\n- ')}\n\nVerify the desktop build output and packaging configuration includes the client dist bundle.`
+  const indexPath = path.join(process.resourcesPath, 'apps', 'client', 'dist', 'index.html')
+  if (!fs.existsSync(indexPath)) {
+    const message = `Packaged client index.html not found. Attempted path:\n- ${indexPath}\n\nVerify the desktop build output and packaging configuration includes the client dist bundle.`
     console.error(message)
     dialog.showErrorBox('BrewPoint POS - Missing UI Bundle', message)
     app.quit()
