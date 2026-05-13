@@ -30,10 +30,21 @@
     "files": [
       "main.js",
       "preload.js",
-      "../../apps/client/dist/**/*",
-      "../../apps/server/dist/**/*",
-      "../../apps/server/prisma/**/*",
       "../../package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../../apps/client/dist",
+        "to": "apps/client/dist"
+      },
+      {
+        "from": "../../apps/server/dist",
+        "to": "apps/server/dist"
+      },
+      {
+        "from": "../../apps/server/prisma",
+        "to": "apps/server/prisma"
+      }
     ],
     "win": {
       "target": [

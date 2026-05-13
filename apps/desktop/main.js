@@ -8,7 +8,7 @@ let serverProcess
 
 function startServer() {
   const serverFile = app.isPackaged
-    ? path.join(process.resourcesPath, 'app.asar.unpacked', '..', '..', 'apps', 'server', 'dist', 'server.js')
+    ? path.join(process.resourcesPath, 'apps', 'server', 'dist', 'server.js')
     : path.join(__dirname, '..', 'server', 'src', 'server.ts')
 
   const command = app.isPackaged ? 'node' : 'npx'
@@ -43,7 +43,9 @@ function createWindow() {
   const appPath = app.getAppPath()
   const packagedCandidates = [
     path.join(appPath, 'apps', 'client', 'dist', 'index.html'),
-    path.join(appPath, 'client', 'dist', 'index.html')
+    path.join(appPath, 'client', 'dist', 'index.html'),
+    path.join(process.resourcesPath, 'apps', 'client', 'dist', 'index.html'),
+    path.join(process.resourcesPath, 'client', 'dist', 'index.html')
   ]
   const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate))
   if (!indexPath) {
