@@ -40,12 +40,9 @@ function createWindow() {
     return
   }
 
-  const packagedCandidates = [
-    path.join(process.resourcesPath, 'apps', 'client', 'dist', 'index.html')
-  ]
-  const indexPath = packagedCandidates.find((candidate) => fs.existsSync(candidate))
-  if (!indexPath) {
-    const message = `Packaged client index.html not found. Attempted paths:\n- ${packagedCandidates.join('\n- ')}\n\nVerify the desktop build output and packaging configuration includes the client dist bundle.`
+  const indexPath = path.join(process.resourcesPath, 'apps', 'client', 'dist', 'index.html')
+  if (!fs.existsSync(indexPath)) {
+    const message = `Packaged client index.html not found. Attempted path:\n- ${indexPath}\n\nVerify the desktop build output and packaging configuration includes the client dist bundle.`
     console.error(message)
     dialog.showErrorBox('BrewPoint POS - Missing UI Bundle', message)
     app.quit()
