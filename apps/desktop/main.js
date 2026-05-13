@@ -43,7 +43,6 @@ function createWindow() {
   const appPath = app.getAppPath()
   const packagedCandidates = [
     path.join(appPath, 'apps', 'client', 'dist', 'index.html'),
-    path.join(appPath, 'client', 'dist', 'index.html'),
     path.join(process.resourcesPath, 'apps', 'client', 'dist', 'index.html'),
     path.join(process.resourcesPath, 'client', 'dist', 'index.html')
   ]
